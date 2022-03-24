@@ -1,12 +1,10 @@
 import { List, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 
-import menuItems from "../../../menu-list";
-import NavGroup from "./NavGroup";
+import menuItems from "menu-list";
+import NavGroup from "./nav/NavGroup";
 
 const MenuList: React.FC = () => {
-
-
   const navItems = menuItems.items.map((item) => {
     switch (item.type) {
       case "group":

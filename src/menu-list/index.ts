@@ -20,7 +20,7 @@ export interface MenuItem {
   title: string;
   type: "item";
   icon: any;
-  url?: string;
+  url: string;
   breadcrumbs?: boolean;
 }
 export type MenuItemType = MenuItem | SubmenuItem;
@@ -45,41 +45,41 @@ const dashboard: MenuGroupItem = {
       icon: null,
       children: [
         {
-          id: "d1",
-          title: "D1",
+          id: "r1",
+          title: "Report 1",
           type: "item",
-          url: "/dashboard/defad1ult",
+          url: "/report/r1",
           icon: null,
           breadcrumbs: false,
         },
         {
-          id: "d2",
-          title: "D2",
+          id: "r2",
+          title: "Report 2",
           type: "item",
-          url: "/dashboard/default",
+          url: "/report/r2",
           icon: null,
           breadcrumbs: false,
         },
         {
-          id: "report2",
+          id: "report-type",
           title: "Report",
           type: "collapse",
           icon: null,
 
           children: [
             {
-              id: "d4",
-              title: "D1",
+              id: "r31",
+              title: "report type 3 1",
               type: "item",
-              url: "/dashboard/defad1ult",
+              url: "/report/report-type/r31",
               icon: null,
               breadcrumbs: false,
             },
             {
-              id: "d3",
-              title: "D2",
+              id: "r32",
+              title: "report type 3 2",
               type: "item",
-              url: "/dashboard/default",
+              url: "/report/report-type/r32",
               icon: null,
             },
           ],
@@ -109,6 +109,14 @@ const dashboard: MenuGroupItem = {
           icon: null,
         },
       ],
+    },
+    {
+      id: "test",
+      title: "test",
+      type: "item",
+      url: "/test",
+      icon: null,
+      breadcrumbs: false,
     },
   ],
 };

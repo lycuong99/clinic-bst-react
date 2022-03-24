@@ -1,8 +1,8 @@
 import { Divider, List, ListSubheader, useTheme } from "@mui/material";
 import {} from "@mui/material/styles";
+import { useTypedSelector } from "../../../../../hook";
 
-import { useTypedSelector } from "../../../hook";
-import { MenuGroupItem, MenuItem, MenuItemType } from "../../../menu-list";
+import { MenuGroupItem, MenuItemType } from "../../../../../menu-list";
 import NavCollapse from "./NavCollapse";
 import NavItem from "./NavItem";
 
@@ -39,7 +39,6 @@ const NavGroup: React.FC<NavGroupProps> = ({ item }) => {
                   transition: theme.transitions.create(["all"], {
                     duration: theme.transitions.duration.standard,
                     easing: theme.transitions.easing.easeOut,
-                    // delay: "2s",
                   }),
                 }
               : {
@@ -48,7 +47,7 @@ const NavGroup: React.FC<NavGroupProps> = ({ item }) => {
                   transition: theme.transitions.create(["all"], {
                     duration: theme.transitions.duration.standard,
                     easing: theme.transitions.easing.easeOut,
-                    delay: '0.195s'
+                    delay: "0.2s",
                   }),
                 },
 

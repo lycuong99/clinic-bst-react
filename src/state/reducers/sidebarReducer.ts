@@ -4,11 +4,13 @@ import { Action } from "../actions";
 interface SidebarState {
   isOpen: boolean;
   menuItemId: string | null;
+  selectedItems: string[];
 }
 
 const INIT_STATE: SidebarState = {
   isOpen: true,
   menuItemId: null,
+  selectedItems: [],
 };
 const reducer = (
   state: SidebarState = INIT_STATE,
@@ -21,6 +23,11 @@ const reducer = (
         isOpen: !state.isOpen,
       };
     }
+    case ActionType.SELECT_MENU_ITEM:
+      return {
+        ...state,
+        selectedItems: [action.payload],
+      };
   }
   return state;
 };

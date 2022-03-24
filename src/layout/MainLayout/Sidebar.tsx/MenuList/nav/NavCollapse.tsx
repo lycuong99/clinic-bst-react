@@ -7,22 +7,21 @@ import {
   Typography,
   useTheme,
   Popover,
- 
   Zoom,
-
+  useMediaQuery,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { MenuItemType, SubmenuItem } from "../../../menu-list";
+import { MenuItemType, SubmenuItem } from "menu-list";
 import NavItem from "./NavItem";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 
+import { getChildrenBranchStyle, getParentBranchStyle } from "./itemStyle";
 
-import { getChildrenBranchStyle, getParentBranchStyle } from "./branchStyle";
-
-import { useTypedSelector } from "../../../hook";
+import { useTypedSelector } from "hook";
 import HomeTwoToneIcon from "@mui/icons-material/HomeTwoTone";
 import { Box } from "@mui/system";
+import { useLocation } from "react-router";
 
 interface NavCollapseProps {
   item: SubmenuItem;
@@ -35,6 +34,9 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ item, level }) => {
   let lengOfBranch = item.children?.length * 48 + item.children.length * 8 + 8;
   const [anchorEl, setAnchorEl] = useState<HTMLDivElement | null>(null);
   const openPopover = Boolean(anchorEl);
+  const location = useLocation();
+  const matchUpMd = useMediaQuery(theme.breakpoints.up("md"));
+  const selected = location.pathname.split("/").includes(item.id);
 
   useEffect(() => {
     if (!isOpenSidebar) {
@@ -77,7 +79,7 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ item, level }) => {
   return (
     <>
       <ListItemButton
-        selected={open || openPopover}
+        selected={open || openPopover || selected}
         onClick={(e) => {
           if (isOpenSidebar) {
             setOpen(!open);
@@ -90,16 +92,27 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ item, level }) => {
           mb: "8px",
           paddingX: 3,
           paddingY: 3,
-          width: !isOpenSidebar && level < 2 ? "48px" : "auto",
+          width: !isOpenSidebar && level < 2 ? "48px" : "100%",
+          // minWidth: "48px",
           alignItems: "center",
           display: "flex",
           height: "48px",
           position: "relative",
-          transition: theme.transitions.create(["all"], {
+          transition: theme.transitions.create(["width"], {
             duration: theme.transitions.duration.standard,
+            easing: theme.transitions.easing.easeIn,
+            delay: "2s",
           }),
           "&:after": level > 1 ? getChildrenBranchStyle(theme) : undefined,
-          "&.Mui-selected": {
+          "&.MuiListItemButton-root": {
+            transition: theme.transitions.create(["all"], {
+              duration: theme.transitions.duration.standard,
+              easing: theme.transitions.easing.easeIn,
+
+              delay: "2s",
+            }),
+          },
+          "& .Mui-selected": {
             backgroundColor: theme.palette.primary.light,
           },
         }}
@@ -114,10 +127,11 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ item, level }) => {
         <ListItemText
           sx={{
             m: 0,
-            // opacity: level < 2 && !isOpenSidebar ? 0 : 1,
-            // width: level < 2 && isOpenSidebar ? "auto " : 0,
+            minWidth: "50px",
+            position: "relative",
+            opacity: level < 2 && !isOpenSidebar && matchUpMd ? 0 : 1,
             transform:
-              level < 2 && !isOpenSidebar
+              level < 2 && !isOpenSidebar && matchUpMd
                 ? "translateX(200px)"
                 : "translateX(0)",
             transition: theme.transitions.create(["all"], {
@@ -133,23 +147,25 @@ const NavCollapse: React.FC<NavCollapseProps> = ({ item, level }) => {
         ></ListItemText>
         <Box
           sx={{
-            opacity: !isOpenSidebar && level < 2 ? 0 : 1,
+            flex: "auto",
+            opacity: level < 2 && !isOpenSidebar && matchUpMd ? 0 : 1,
             // width: !isOpenSidebar && level < 2 ? 0 : "auto",
+            position: "relative",
             transform:
               level < 2 && !isOpenSidebar
-                ? "translateX(200px)"
+                ? "translateX(250px)"
                 : "translateX(0)",
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "end",
+            width: "auto",
             transition: theme.transitions.create(["all"], {
-              duration: theme.transitions.duration.standard,
+              duration: theme.transitions.duration.short,
               easing: theme.transitions.easing.easeIn,
             }),
           }}
         >
           {open || openPopover ? <ExpandLess /> : <ExpandMore />}
         </Box>
-     
       </ListItemButton>
       {isOpenSidebar ? (
         <Collapse in={open} unmountOnExit>

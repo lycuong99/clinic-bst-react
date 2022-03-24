@@ -4,7 +4,7 @@ const branchWidth = "2px";
 
 export const getChildrenBranchStyle = (theme: Theme) => {
   const branchColor = theme.palette.primary.light;
-  console.log(theme.palette.primary.light);
+
   return {
     content: "''",
     position: "absolute",

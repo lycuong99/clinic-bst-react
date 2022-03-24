@@ -26,10 +26,10 @@ const themeOption = {
 };
 
 export const theme = () => {
-  
   const themes = createTheme({
     palette: themePalette(),
     spacing: 4,
+    direction: "ltr",
     typography: {
       fontFamily: fontFamily,
       h1: {
@@ -66,6 +66,11 @@ export const theme = () => {
         textTransform: "capitalize",
       },
       htmlFontSize: 16,
+    },
+    mixins: {
+      toolbar: {
+        height: "64px",
+      },
     },
   });
   return themes;
