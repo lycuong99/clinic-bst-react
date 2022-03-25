@@ -7,7 +7,6 @@ import {
   FormControlLabel,
   FormLabel,
   Grid,
-  Hidden,
   Paper,
   Radio,
   TextField,
@@ -21,6 +20,7 @@ import { useFormik } from "formik";
 import gsap from "gsap/all";
 import { useEffect, useRef } from "react";
 import AnimateContent from "./AnimateContent";
+import * as Yup from "yup";
 
 const Login: React.FC = () => {
   const theme = useTheme();
@@ -35,6 +35,13 @@ const Login: React.FC = () => {
     onSubmit: (values) => {
       console.log(values);
     },
+    validationSchema: Yup.object().shape({
+      email: Yup.string().email("Invalid email").required("Required"),
+      password: Yup.string()
+        .min(6, "Too Short!")
+        .max(30, "Too Long!")
+        .required("Required"),
+    }),
   });
 
   useEffect(() => {
@@ -53,6 +60,9 @@ const Login: React.FC = () => {
           // width: "100vw",
           backgroundColor: theme.palette.secondary.light,
           padding: 4,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <Container
@@ -70,7 +80,8 @@ const Login: React.FC = () => {
             gap={8}
             sx={{
               borderRadius: "16px",
-              transform: "translateY(25%)",
+              // transform: "translateY(25%)",
+            
               paddingX: 4,
               paddingY: 4,
             }}
@@ -88,8 +99,11 @@ const Login: React.FC = () => {
               justifyContent={"center"}
               sx={{
                 backgroundColor: "#fff",
+                boxShadow: matchDownMD
+                  ? undefined
+                  : "rgba(17, 12, 46, 0.15) 0px 48px 100px 0px",
                 borderRadius: "16px",
-                padding: matchDownMD ? 2 : 4,
+                padding: matchDownMD ? 2 : 5,
               }}
             >
               <Grid item container direction="column" gap={3}>
@@ -121,6 +135,10 @@ const Login: React.FC = () => {
                       value={formik.values.email}
                       onChange={formik.handleChange}
                       size={matchDownMD ? "small" : "medium"}
+                      error={
+                        formik.touched.email && Boolean(formik.errors.email)
+                      }
+                      helperText={formik.touched.email && formik.errors.email}
                     />
                   </FormControl>
                 </Grid>
@@ -131,10 +149,18 @@ const Login: React.FC = () => {
                       fullWidth
                       type={"password"}
                       placeholder="Enter your password"
+                      name="password"
                       variant="outlined"
                       value={formik.values.password}
                       onChange={formik.handleChange}
                       size={matchDownMD ? "small" : "medium"}
+                      error={
+                        formik.touched.password &&
+                        Boolean(formik.errors.password)
+                      }
+                      helperText={
+                        formik.touched.password && formik.errors.password
+                      }
                     />
                   </FormControl>
                 </Grid>
@@ -157,6 +183,11 @@ const Login: React.FC = () => {
                       disableRipple
                       disableFocusRipple
                       disableTouchRipple
+                      sx={{
+                        "&:hover": {
+                          textDecoration: "underline",
+                        },
+                      }}
                     >
                       Forget Password
                     </Button>
