@@ -5,6 +5,7 @@ import {
   ListItemButton,
   ListItemText,
   Popover,
+  Stack,
   Typography,
   useMediaQuery,
 } from "@mui/material";
@@ -12,6 +13,7 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import { useTheme } from "@mui/system";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import useAuth from "hook/use-auths";
 
 const lngCode = {
   vn: "vi-VN",
@@ -38,6 +40,7 @@ const Header: React.FC<HeaderProps> = ({ handleToggleDrawer }) => {
   const matchUpMd = useMediaQuery(theme.breakpoints.up("md"));
   const { t, i18n } = useTranslation("translation");
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+  const { logout } = useAuth();
 
   const handleChangeLanguage = (code: string) => {
     i18n.changeLanguage(code);
@@ -60,6 +63,15 @@ const Header: React.FC<HeaderProps> = ({ handleToggleDrawer }) => {
       )}
       {/* LOGO - SECTION */}
       <Typography>{t("logo-title")}</Typography>
+      <Stack>
+        <Button
+          onClick={() => {
+            logout();
+          }}
+        >
+          Logout
+        </Button>
+      </Stack>
       <Button
         onClick={(e) => {
           setAnchorEl(e.currentTarget);

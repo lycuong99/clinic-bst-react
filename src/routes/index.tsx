@@ -1,3 +1,5 @@
+import AuthGuard from "guards/AuthGuard";
+import GuestGuard from "guards/GuestGuard";
 import MainLayout from "layout/MainLayout";
 import Login from "pages/Login";
 import Test from "pages/test";
@@ -5,7 +7,11 @@ import { RouteObject, useRoutes } from "react-router-dom";
 
 let MainRoutes: RouteObject = {
   path: "/",
-  element: <MainLayout />,
+  element: (
+    <AuthGuard>
+      <MainLayout />
+    </AuthGuard>
+  ),
   children: [
     {
       element: <div>this is a dashboard</div>,
@@ -40,7 +46,11 @@ let MainRoutes: RouteObject = {
 
 let AuthRoutes: RouteObject = {
   path: "/login",
-  element: <Login />,
+  element: (
+    <GuestGuard>
+      <Login />
+    </GuestGuard>
+  ),
 };
 // ==============================|| ROUTING RENDER ||============================== //
 export default function ThemeRoutes() {

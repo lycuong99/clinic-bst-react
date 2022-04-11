@@ -6,8 +6,10 @@ import {
   signInWithPopup,
   signOut,
   UserCredential,
+  onAuthStateChanged,
+  User,
 } from "firebase/auth";
-import { createContext, useReducer } from "react";
+import { createContext, useEffect, useReducer } from "react";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -22,9 +24,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 // Initialize Firebase Authentication and get a reference to the service
 const auth = getAuth(app);
-type AuthUser = {
-  username: string | null;
-};
+type AuthUser = Record<string, any>;
 type FirebaseContextType = {
   isAuthenticated: boolean;
   user?: AuthUser | null;
@@ -41,6 +41,10 @@ interface AuthState {
 }
 interface Action {
   type: string;
+  payload: {
+    user: Record<string, any> | null;
+    isAuthenticated: boolean;
+  };
 }
 
 const initialState: AuthState = {
@@ -49,7 +53,20 @@ const initialState: AuthState = {
 };
 
 const reducer = (state: AuthState, action: Action) => {
+  const { isAuthenticated, user } = action.payload;
   switch (action.type) {
+    case "LOGIN":
+      return {
+        ...state,
+        isAuthenticated: isAuthenticated,
+        user: user,
+      };
+    case "LOGOUT":
+      return {
+        ...state,
+        isAuthenticated: false,
+        user: null,
+      };
     default:
       return state;
   }
@@ -57,6 +74,30 @@ const reducer = (state: AuthState, action: Action) => {
 const AuthProvider: React.FC = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      console.log(state);
+      if (user) {
+        //save user
+        dispatch({
+          type: "LOGIN",
+          payload: {
+            isAuthenticated: true,
+            user: user,
+          },
+        });
+      } else {
+        console.log("LOGOUT");
+        dispatch({
+          type: "LOGOUT",
+          payload: {
+            isAuthenticated: true,
+            user: null,
+          },
+        });
+      }
+    });
+  }, [dispatch]);
   const login = (email: string, password: string) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
@@ -76,7 +117,7 @@ const AuthProvider: React.FC = ({ children }) => {
     <>
       <FirebaseContext.Provider
         value={{
-          isAuthenticated: false,
+          isAuthenticated: state.isAuthenticated,
           user: null,
           login: login,
           loginWithGoogle: loginWithGoogle,
