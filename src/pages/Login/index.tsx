@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Checkbox,
@@ -14,6 +15,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { useTheme } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
 import doctorImg from "assets/images/doctor.svg";
 import { useFormik } from "formik";
@@ -21,19 +23,33 @@ import gsap from "gsap/all";
 import { useEffect, useRef } from "react";
 import AnimateContent from "./AnimateContent";
 import * as Yup from "yup";
+import useAuth from "hook/use-auths";
 
+type InitialFormValues = {
+  email: string;
+  password: string;
+  afterSubmit?: string;
+};
 const Login: React.FC = () => {
   const theme = useTheme();
   const matchDownMD = useMediaQuery(theme.breakpoints.down("md"));
   let containerRef = useRef(null);
-
-  const formik = useFormik({
+  const { login, loginWithGoogle } = useAuth();
+  const formik = useFormik<InitialFormValues>({
     initialValues: {
       email: "",
       password: "",
     },
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values, { setErrors, setSubmitting }) => {
+      try {
+        let user = await login(values.email, values.password);
+        console.log(values);
+        setSubmitting(false);
+      } catch (error) {
+        console.error(error);
+        setErrors({ afterSubmit: "Login Fail!" });
+        setSubmitting(false);
+      }
     },
     validationSchema: Yup.object().shape({
       email: Yup.string().email("Invalid email").required("Required"),
@@ -43,6 +59,17 @@ const Login: React.FC = () => {
         .required("Required"),
     }),
   });
+  const { errors, setErrors, isSubmitting } = formik;
+
+  const handleLoginGoogle = async () => {
+    try {
+      let user = await loginWithGoogle();
+      console.log(user);
+    } catch (e) {
+      console.error(e);
+      setErrors({ afterSubmit: "Login Fail!" });
+    }
+  };
 
   useEffect(() => {
     gsap.from(containerRef.current, {
@@ -81,7 +108,7 @@ const Login: React.FC = () => {
             sx={{
               borderRadius: "16px",
               // transform: "translateY(25%)",
-            
+
               paddingX: 4,
               paddingY: 4,
             }}
@@ -104,6 +131,10 @@ const Login: React.FC = () => {
                   : "rgba(17, 12, 46, 0.15) 0px 48px 100px 0px",
                 borderRadius: "16px",
                 padding: matchDownMD ? 2 : 5,
+                transition: theme.transitions.create("height", {
+                  easing: theme.transitions.easing.easeInOut,
+                  duration: "0.7s",
+                }),
               }}
             >
               <Grid item container direction="column" gap={3}>
@@ -115,6 +146,11 @@ const Login: React.FC = () => {
                   <Typography variant="caption">
                     Welcome back! Please enter your details
                   </Typography>
+                </Grid>
+                <Grid item>
+                  {errors.afterSubmit && (
+                    <Alert severity="error">{errors.afterSubmit}</Alert>
+                  )}
                 </Grid>
               </Grid>
               <Grid
@@ -203,20 +239,26 @@ const Login: React.FC = () => {
                 gap={3}
               >
                 <Grid item>
-                  <Button
+                  <LoadingButton
                     type="submit"
                     variant="contained"
                     fullWidth
                     size="large"
+                    loading={isSubmitting}
                   >
                     Sign in
-                  </Button>
+                  </LoadingButton>
                 </Grid>
                 {/* <Grid item alignSelf={"center"}>
                 <Typography variant="subtitle1"> Or</Typography>
               </Grid> */}
                 <Grid item>
-                  <Button variant="outlined" fullWidth size="large">
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    size="large"
+                    onClick={handleLoginGoogle}
+                  >
                     Sign in with Google
                   </Button>
                 </Grid>
