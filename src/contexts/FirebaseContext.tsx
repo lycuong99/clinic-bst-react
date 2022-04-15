@@ -10,7 +10,8 @@ import {
   User,
 } from "firebase/auth";
 import { createContext, useEffect, useReducer } from "react";
-
+import { verify } from "services/index";
+import { setSession } from "utils/jwt";
 // Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBdDsgb-9eIf4c-j-Ao4slJXLP6zuhEEYk",
@@ -25,6 +26,7 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firebase Authentication and get a reference to the service
 const auth = getAuth(app);
 type AuthUser = Record<string, any>;
+
 type FirebaseContextType = {
   isAuthenticated: boolean;
   user?: AuthUser | null;
@@ -77,17 +79,32 @@ const AuthProvider: React.FC = ({ children }) => {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       console.log(state);
+
       if (user) {
-        //save user
-        dispatch({
-          type: "LOGIN",
-          payload: {
-            isAuthenticated: true,
-            user: user,
-          },
+        //get token
+        user.getIdToken().then(async (token) => {
+          console.log("TOKEN: ", token);
+
+          // verify
+          try {
+            await verify(token);
+
+            setSession(token);
+
+            dispatch({
+              type: "LOGIN",
+              payload: {
+                isAuthenticated: true,
+                user: user,
+              },
+            });
+          } catch (error) {
+            console.error(error);
+          }
         });
       } else {
         console.log("LOGOUT");
+
         dispatch({
           type: "LOGOUT",
           payload: {
