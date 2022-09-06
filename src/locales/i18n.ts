@@ -1,18 +1,14 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import enLocales from "./en.json";
+import vnLocales from "./vn.json";
 
 const resources = {
   en: {
-    translation: {
-      Welcome: "Welcome to ",
-      "logo-title": "Dr Trai's Clinic",
-    },
+    translation: enLocales,
   },
   vi: {
-    translation: {
-      Welcome: "Chào mừng đến với",
-      "logo-title": "Phòng khám Bs.Trãi",
-    },
+    translation: vnLocales,
   },
 };
 

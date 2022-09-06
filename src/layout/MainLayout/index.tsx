@@ -45,10 +45,7 @@ const MainLayout: React.FC = () => {
         </Toolbar>
       </AppBar>
       <Sidebar />
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, p: 3, marginTop: theme.mixins.toolbar.height }}
-      >
+      <Box component="main" sx={{ flexGrow: 1, p: 3, marginTop: theme.mixins.toolbar.height }}>
         <Outlet />
       </Box>
     </Box>

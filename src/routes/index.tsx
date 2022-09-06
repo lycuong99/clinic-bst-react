@@ -1,7 +1,8 @@
 import AuthGuard from "guards/AuthGuard";
 import GuestGuard from "guards/GuestGuard";
 import MainLayout from "layout/MainLayout";
-import Login from "pages/Login";
+import Login from "pages/auth/Login";
+import PatientManagement from "pages/management/Patient";
 import Test from "pages/test";
 import { RouteObject, useRoutes } from "react-router-dom";
 
@@ -14,7 +15,7 @@ let MainRoutes: RouteObject = {
   ),
   children: [
     {
-      element: <div>this is a dashboard</div>,
+      element: <PatientManagement />,
       path: "/dashboard/default",
     },
     {

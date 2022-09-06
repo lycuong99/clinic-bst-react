@@ -1,5 +1,5 @@
 import useAuth from "hook/use-auths";
-import Login from "pages/Login";
+import Login from "pages/auth/Login";
 import { useState } from "react";
 import { Navigate, useLocation } from "react-router";
 import { PATH_AUTH } from "routes/paths";
